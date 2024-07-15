@@ -45,11 +45,17 @@ const findBookingById = (id) => {
   return bookings.value.findIndex((b) => b.id === id);
 };
 
+// this is a good practice of how UI and 
+// database processess data, on click event
 const handleRegistration = async (event) => {
+  // this is to check if already registered on a certain bookings
   if (bookings.value.some((booking) => booking.eventId === event.id && booking.userId === 1)) {
     alert('You are already registered for this event.');
     return;
   }
+
+  // create temporary new bookings
+  // with a status of 'pending'
   const newBooking = {
     id: Date.now().toString(),
     userId: 1,
@@ -58,6 +64,10 @@ const handleRegistration = async (event) => {
     status: 'pending'
   };
 
+  // then pushed it to the bookings variable
+  // which then be visible on the display
+  // but not yet pushed on the database
+  // just for UI best practice
   bookings.value.push(newBooking);
 
   try {
@@ -67,12 +77,21 @@ const handleRegistration = async (event) => {
       body: JSON.stringify({ ...newBooking, status: 'confirmed' })
     });
     if (response.ok) {
+      // after pushing it to database, if no error occurs
+      // then the new booking pushed earlier will be
+      // replaced to the booking pushed on the database
+      // this booking has 'confirmed' status
+      // so automatically it will display 'confirmed' after 'pending'
+      // this is a good practice of UI
       const index = findBookingById(newBooking.id);
       bookings.value[index] = await response.json();
     } else {
       throw new Error('Failed to confirm booking');
     }
   } catch (e) {
+    // if the new booking not successfully pushed
+    // or encountered an error
+    // it will revert 
     console.error('Failed to register for event: ', e);
     bookings.value = bookings.value.filter((b) => b.id !== newBooking.id);
   }
