@@ -45,7 +45,7 @@ const findBookingById = (id) => {
   return bookings.value.findIndex((b) => b.id === id);
 };
 
-// this is a good practice of how UI and 
+// this is a good practice of how UI and
 // database processess data, on click event
 const handleRegistration = async (event) => {
   // this is to check if already registered on a certain bookings
@@ -68,7 +68,7 @@ const handleRegistration = async (event) => {
   // which then be visible on the display
   // but not yet pushed on the database
   // just for UI best practice
-  bookings.value.push(newBooking);
+  bookings.value.unshift(newBooking);
 
   try {
     const response = await fetch('http://localhost:3001/bookings', {
@@ -91,7 +91,7 @@ const handleRegistration = async (event) => {
   } catch (e) {
     // if the new booking not successfully pushed
     // or encountered an error
-    // it will revert 
+    // it will revert
     console.error('Failed to register for event: ', e);
     bookings.value = bookings.value.filter((b) => b.id !== newBooking.id);
   }
